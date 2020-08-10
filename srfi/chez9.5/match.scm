@@ -1,7 +1,10 @@
 (library (match)
-  (export match match-lambda match-lambda* match-let match-letrec match-let*)
+  (export match match-lambda match-lambda* match-let match-letrec match-let*
+          __ ___ __1 __= __* ***  ? $ struct _@ object get!)
 ;  (import (only (gauche base) is-a? slot-ref slot-set!)
   (import (scheme))
+
+  (include "./utils.scm")
 ;;;NOTE these operators have been converted to based on repl complaints:
 ;;;      ..1     __1
 ;;;      ..=     __=

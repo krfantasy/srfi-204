@@ -1,10 +1,9 @@
-#|
+(import (srfi :9))
 (define-record-type Point
   (make-point x y)
   point?
   (x point-x point-x-set!)
   (y point-y point-y-set!))
-|#
 
 (test-begin test-name)
 ;;;log version
@@ -18,7 +17,7 @@
 (test-equal "null" 'ok (match '() (() 'ok)))
 (test-equal "pair" 'ok (match '(ok) ((x) x)))
 (test-equal "vector" 'ok (match '#(ok) (#(x) x)))
-(test-equal "any doubled" 'ok (match '(1 2) ((_ _) 'ok)))
+(test-equal "any doubled" 'ok (match '(1 2) ((__ __) 'ok)))
 (test-equal "and empty" 'ok (match '(o k) ((and) 'ok)))
 (test-equal "and single" 'ok (match 'ok ((and x) x)))
 (test-equal "and double" 'ok (match 'ok ((and (? symbol?) y) 'ok)))
@@ -226,21 +225,18 @@
 		       (loop rest sum)))))
 
 (test-equal "match-letrec" '(2 1 1 2)
-       (match-letrec (((x y) (list 1 (lambda () (list a x))))
-		      ((a b) (list 2 (lambda () (list x a)))))
-		     (append (y) (b))))
+            (match-letrec (((x y) (list 1 (lambda () (list a x))))
+                           ((a b) (list 2 (lambda () (list x a)))))
+              (append (y) (b))))
 
-(cond-expand
-  (is-a?
-    (test-equal "record positional"
-		'(1 0)
-		(match (make-point 0 1)
-		       (($ Point x y) (list y x))))
-    (test-equal "record named"
-		'(1 0)
-		(match (make-point 0 1)
-		       ((@ Point (x x) (y y)) (list y x))))
-    (test-end test-name) )
-  (else
-    (test-end test-name)))
- 
+(test-equal "record positional"
+  '(1 0)
+  (match (make-point 0 1)
+    (($ Point x y) (list y x))))
+
+(test-equal "record named"
+  '(1 0)
+  (match (make-point 0 1)
+    ((_@ Point (x x) (y y)) (list y x))))
+
+(test-end test-name)
